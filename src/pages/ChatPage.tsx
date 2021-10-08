@@ -14,6 +14,7 @@ import { Message } from '../store/chatStore/chatStore';
 //  ui
 import ChatList from '../components/chat/ChatList/ChatList';
 import ChatRoom from '../components/chat/ChatRoom/ChatRoom';
+import NoSelectedMessages from '../components/chat/ChatRoom/NoSelectedMessages';
 
 const DesktopWrap = styled('div')(({ theme }) => ({
   height: '100%',
@@ -25,6 +26,8 @@ const DesktopWrap = styled('div')(({ theme }) => ({
 
 const ChatPage = (): JSX.Element => {
   const store = useContext(StoreContext);
+  const selectedChar = store.chatStore.selectedChat;
+  const storeMessages = store.chatStore.messages;
 
   useEffect(() => {
     testMessages.forEach((msg: Message) => {
@@ -33,6 +36,10 @@ const ChatPage = (): JSX.Element => {
 
     console.log('messages been loaded');
   }, []);
+
+  // useEffect(() => {
+  //   console.log('storeMessages',storeMessages)
+  // }, [storeMessages]);
 
   const handleCloseMobMenu = (): void => {
     store.mobStore.closeMobMenu();
@@ -54,7 +61,7 @@ const ChatPage = (): JSX.Element => {
           </DesktopWrap>
         </Grid>
         <Grid container item lg={9} justifyContent="center" >
-          <ChatRoom />
+          {selectedChar ? <ChatRoom /> : <NoSelectedMessages />}
         </Grid>
       </Grid>
     </Container>

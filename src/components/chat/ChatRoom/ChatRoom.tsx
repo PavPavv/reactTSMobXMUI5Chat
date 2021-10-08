@@ -1,8 +1,11 @@
+import { useEffect, useContext } from 'react';
+import { observer } from "mobx-react-lite";
 import { styled } from '@mui/system';
 import Stack from '@mui/material/Stack';
 
 //  logic
-import { testMessages } from '../../../store/mobStore/testData';
+import { StoreContext } from '../../../store/StoreContext';
+import { getClockTime } from '../../../utils/utils';
 
 //  ui
 import RoomBar from './RoomBar';
@@ -20,15 +23,21 @@ const Main = styled('main')(({ theme }) => ({
 }));
 
 const ChatRoom = (): JSX.Element => {
-  const messages = testMessages;
+  const store = useContext(StoreContext);
+  const messages = store.chatStore.getRoomMessages();
+
+  useEffect(() => {
+
+  }, []);
 
   return (
     <Main>
-      <RoomBar name="Jack White" />
+      <RoomBar />
       <Stack
         spacing={1}
         direction="column-reverse"
         sx={{
+          maxWidth: '748px',
           height: 'calc(100% - 89px)',
           padding: '20px',
           overflowX: 'hidden',
@@ -39,8 +48,13 @@ const ChatRoom = (): JSX.Element => {
                 : theme.palette.grey[900],
         }}  
       >
-        {messages.map((message) => (
-          <Message key={message.id} message={message.body}/>
+        {messages.sort((a, b) => b.ts.getTime() - a.ts.getTime()).map((message) => (
+          <Message 
+            key={message.id} 
+            message={message.body}
+            time={getClockTime(message.ts)}
+            isOut={message.isOut}
+          />
         ))}
       </Stack>
       <SendPanel />
@@ -48,4 +62,4 @@ const ChatRoom = (): JSX.Element => {
   );
 };
 
-export default ChatRoom;
+export default observer(ChatRoom);

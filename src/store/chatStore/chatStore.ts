@@ -1,7 +1,5 @@
 import { makeAutoObservable } from "mobx";
 
-import { testMessages } from "../mobStore/testData";
-
 export type MessageProperty = number | string | boolean | Date;
 
 export interface Message {
@@ -25,20 +23,26 @@ export interface ChatStoreI {
 }
 
 //  store helper functions
+type MsgSortType = 'ts' | 'body' | 'isOut' | 'roomId';
+
+const getLastMsgProperty = (messages: Message[], room: string, property: MsgSortType): MessageProperty => {
+  const test =  messages.filter((message) => message.channelId === room).sort((a, b) => b.ts.getTime() - a.ts.getTime())[0];
+  return test[property];
+};
+
 const getLatestRoomSpeaker = (messages: Message[], channelName: string): string => {
-  const lastIncomingSpeaker =  messages.filter((message) => message.channelId === channelName).sort((a, b) => b.ts.getTime() - a.ts.getTime())[0].roomId;
-  
-  const isOutcoming = messages.filter((message) => message.channelId === channelName).sort((a, b) => b.ts.getTime() - a.ts.getTime())[0].isOut;
+  const lastIncomingSpeaker =  getLastMsgProperty(messages, channelName, 'roomId');
+  const isOutcoming = getLastMsgProperty(messages, channelName, 'isOut');
                       
-  return isOutcoming ? 'you' : lastIncomingSpeaker;
+  return isOutcoming ? 'you' : lastIncomingSpeaker as string;
 };
 
 const getLatestMessageFromChannel = (messages: Message[], channelName: string): string => {
-  return messages.filter((message) => message.channelId === channelName).sort((a, b) => b.ts.getTime() - a.ts.getTime())[0].body;
+  return getLastMsgProperty(messages, channelName, 'body') as string;
 };
 
 const getLatestMessageTime = (messages: Message[], channelName: string): Date => {
-  return messages.filter((message) => message.channelId === channelName).sort((a, b) => b.ts.getTime() - a.ts.getTime())[0].ts;
+  return getLastMsgProperty(messages, channelName, 'ts') as Date;;
 };
 
 const getUnreadCount = (messages: Message[], channelName: string): number => {
@@ -48,16 +52,7 @@ const getUnreadCount = (messages: Message[], channelName: string): number => {
     .length
 };
 
-//  TODO!
-// const getLastMsgProperty = (messages: Message[], room: string, property: string): MessageProperty => {
-//   const test =  messages.filter((message) => message.channelId === room).sort((a, b) => b.ts.getTime() - a.ts.getTime())[0];
-//   return test[property];
-// };
-
-// console.log('testy', getLastMsgProperty(testMessages, 'mia', 'ts'))
-
-
-//
+//  store class
 export class ChatStore implements ChatStoreI {
   messages: Message[] = [];
   selectedChat: string = '';
@@ -89,6 +84,10 @@ export class ChatStore implements ChatStoreI {
 
   unreadCount(roomName: string): number {
     return getUnreadCount(this.messages, roomName)
+  }
+
+  getRoomMessages(): Message[] {
+    return this.messages.filter((meassage: Message) => meassage.roomId === this.selectedChat);
   }
 
   //  ideally this method should get all the user's messages from the server

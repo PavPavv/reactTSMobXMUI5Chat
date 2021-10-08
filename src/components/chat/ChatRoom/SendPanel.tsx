@@ -1,6 +1,12 @@
+import React, { useState, useContext } from 'react';
+import { observer } from "mobx-react-lite";
 import { styled } from '@mui/system';
 import IconButton from '@mui/material/IconButton';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
+
+//  logic
+import { StoreContext } from '../../../store/StoreContext';
+import { Message } from '../../../store/chatStore/chatStore';
 
 const SendPanelWrap = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -19,19 +25,34 @@ const SendPanelInput = styled('input')(({ theme }) => ({
 }));
 
 const SendPanel = (): JSX.Element => {
+  const [value, setValue] = useState('');
+  const store = useContext(StoreContext);
   
   const sendHandler = (): void => {
-    console.log('send btn been clicked')
+    if (!value) return;
+
+    const newMessage: Message = {
+      id: Date.now(),
+      roomId: store.chatStore.selectedChat,
+      channelId: store.chatStore.selectedChat,
+      body: value,
+      ts: new Date(),
+      isOut: true,
+      isUnread: false,
+    };
+
+    store.chatStore.sendMessage(newMessage);
+    setValue('');
   };
 
-  const changeHandler = (): void => {
-
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setValue(e.target.value);
   };
 
   return (
     <SendPanelWrap>
       <SendPanelInput 
-        value="test"
+        value={value}
         onChange={changeHandler}
       />
       <IconButton 
@@ -46,4 +67,4 @@ const SendPanel = (): JSX.Element => {
   );
 };
 
-export default SendPanel;
+export default observer(SendPanel);

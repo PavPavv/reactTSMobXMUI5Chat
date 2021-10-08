@@ -14,9 +14,7 @@ interface AppBarProps extends MuiAppBarProps {
   //
 }
 
-type RoomBarProps = {
-  name: string;
-};
+
 
 const AppBar = styled(MuiAppBar)<AppBarProps>(({ theme }) => ({
   height: '100px',
@@ -30,8 +28,9 @@ const TopIconButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-const RoomBar = ({ name }: RoomBarProps): JSX.Element => {
+const RoomBar = (): JSX.Element => {
   const store = useContext(StoreContext);
+  const name = store.chatStore.selectedChat;
 
   const menuHandler = (): void => {
     store.mobStore.toggleMobMenu();

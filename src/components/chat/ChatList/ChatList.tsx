@@ -43,7 +43,7 @@ const ChatList = (): JSX.Element => {
 
   return (
     <Aside>
-      <ChatName username="Dave Grohl" />
+      <ChatName username="Name" />
       <ViewBox>
         {rooms.map((room, index) => {
           const isActiveRoom = room === selectedChatName;

@@ -20,7 +20,7 @@ const ViewPaper = styled(Paper)(({ theme, ...props }) => ({
   transition: 'linear .1s',
 
   '&:hover': {
-    background: theme.palette.primary.light,
+    background: 'rgba(0,0,0, .08);',
   }
 }));
 

@@ -9,6 +9,9 @@ export const theme = createTheme({
       light: Colors.LightBlue,
       main: Colors.Blue,
     },
+    secondary: {
+      main: Colors.Green,
+    },
     grey: {
       '500': Colors.LightGrey,
       '700': Colors.Grey,
