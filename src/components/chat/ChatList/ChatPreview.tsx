@@ -79,9 +79,10 @@ const ChatPreview = ({name, message, time, latestSpeaker, msgsCount, isRoomSelec
               <Typography variant="h5">{name}</Typography>
             </Grid>
             <Grid item xs={3} container direction="row">
-              <ViewBadge>
-                <Typography variant="subtitle2">{msgsCount}</Typography>
-              </ViewBadge>
+              {msgsCount > 0 && 
+                <ViewBadge>
+                  <Typography variant="subtitle2">{msgsCount}</Typography>
+                </ViewBadge>}
               <Typography variant="subtitle2">{time}</Typography>
             </Grid>
           </Grid>

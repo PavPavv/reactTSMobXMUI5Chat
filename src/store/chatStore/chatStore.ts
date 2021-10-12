@@ -15,6 +15,7 @@ export interface Message {
 export interface ChatStoreI {
   messages: Message[];
   selectedChat: string;
+  isTestShown: boolean;
   sendMessage: (msg: Message) => void;
   latestRoomSpeaker: (roomName: string) => string;
   latestMessageFromChannel: (roomName: string) => string;
@@ -56,6 +57,7 @@ const getUnreadCount = (messages: Message[], channelName: string): number => {
 export class ChatStore implements ChatStoreI {
   messages: Message[] = [];
   selectedChat: string = '';
+  isTestShown: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -88,6 +90,14 @@ export class ChatStore implements ChatStoreI {
 
   getRoomMessages(): Message[] {
     return this.messages.filter((meassage: Message) => meassage.roomId === this.selectedChat);
+  }
+
+  toggleTestModal(): void {
+    this.isTestShown = !this.isTestShown;
+  }
+
+  getTestModalStatus(): boolean {
+    return this.isTestShown;
   }
 
   //  ideally this method should get all the user's messages from the server

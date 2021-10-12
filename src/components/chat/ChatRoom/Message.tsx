@@ -31,7 +31,7 @@ const Message = ({ message, time, isOut }: MessageProps) => {
         }
       }>
         <Typography>{message}</Typography>
-        <Typography>{time}</Typography>
+        <Typography variant="caption" display="block" align="right">{time}</Typography>
       </MessagePaper>
     </MessageWrap>
   );

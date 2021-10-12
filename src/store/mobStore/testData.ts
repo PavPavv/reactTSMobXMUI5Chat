@@ -6,7 +6,7 @@ export const testMessages = [
     body: "Hi!",
     ts: new Date('September 25, 2021 22:06:10'),
     isOut: false,
-    isUnread: true,
+    isUnread: false,
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const testMessages = [
     body: "This is Jack White, mister! Are you here?",
     ts: new Date('August 5, 2021 21:27:10'),
     isOut: false,
-    isUnread: true,
+    isUnread: false,
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const testMessages = [
     body: "Wazaaa!!!",
     ts: new Date('August 5, 2021 19:12:59'),
     isOut: false,
-    isUnread: true,
+    isUnread: false,
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ export const testMessages = [
     body: "This is Dave Grohl, dude!",
     ts: new Date('August 5, 2021 19:14:01'),
     isOut: false,
-    isUnread: true,
+    isUnread: false,
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ export const testMessages = [
     body: "What is up, bro! Heard you are doing very well, mister? Nice to hear! What\'s your plans on next weekends?",
     ts: new Date('August 5, 2021 23:05:45'),
     isOut: false,
-    isUnread: true,
+    isUnread: false,
   },
   {
     id: 6,
@@ -51,7 +51,7 @@ export const testMessages = [
     body: "This is Nathan Williams from Wavves, dude!",
     ts: new Date('August 5, 2021 23:11:20'),
     isOut: false,
-    isUnread: true,
+    isUnread: false,
   },
   {
     id: 7,
@@ -60,7 +60,7 @@ export const testMessages = [
     body: "Yo! Waz up there!",
     ts: new Date('September 25, 2021 22:06:29'),
     isOut: false,
-    isUnread: true,
+    isUnread: false,
   },
   {
     id: 8,

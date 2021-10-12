@@ -6,19 +6,13 @@ import Toolbar from '@mui/material/Toolbar';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Box } from '@mui/system';
 
 //  logic
 import { StoreContext } from '../../../store/StoreContext';
 
-interface AppBarProps extends MuiAppBarProps {
-  //
-}
-
-
-
-const AppBar = styled(MuiAppBar)<AppBarProps>(({ theme }) => ({
-  height: '100px',
-}));
+//  ui
+import TestButton from '../Test/TestButton';
 
 const TopIconButton = styled(IconButton)(({ theme }) => ({
   display: 'none',
@@ -40,6 +34,8 @@ const RoomBar = (): JSX.Element => {
     <MuiAppBar sx={{ position: 'relative', boxShadow: 'none', }}>
       <Toolbar
         sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
           borderBottomColor: (theme) => 
             theme.palette.mode === 'light'
               ? theme.palette.grey[700]
@@ -56,14 +52,21 @@ const RoomBar = (): JSX.Element => {
               : theme.palette.grey[900],
         }}
       > 
-        <TopIconButton
-          edge="start"
-          color="inherit"
-          onClick={menuHandler}
-        >
-          <MenuIcon />
-        </TopIconButton>  
-        <Typography variant="h4">{name}</Typography>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}>
+          <TopIconButton
+            edge="start"
+            color="inherit"
+            onClick={menuHandler}
+          >
+            <MenuIcon />
+          </TopIconButton>  
+          <Typography variant="h4">{name}</Typography>
+        </Box>
+
+      <TestButton />  
       </Toolbar>
     </MuiAppBar>
   );

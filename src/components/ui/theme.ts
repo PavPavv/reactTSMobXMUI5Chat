@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import { breakpoints } from "@mui/system";
 
 import { Colors } from "./colors";
 
@@ -38,13 +39,6 @@ export const theme = createTheme({
       fontSize: 18,
       fontWeight: 600,
     },
-    subtitle1: {
-
-    },
-    subtitle2: {
-      fontSize: 12,
-      fontWeight: 700,
-    }
   },
 
   components: {
@@ -52,6 +46,20 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           minHeight: '45px!important',
+        }
+      }
+    },
+
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          '@media (max-width: 600px)': {
+            fontSize: '0.9em',
+          },
+
+          '@media (max-width: 400px)': {
+            fontSize: '0.8em',
+          }
         }
       }
     }
