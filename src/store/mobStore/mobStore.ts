@@ -6,6 +6,7 @@ export interface MobStoreI {
   closeMobMenu: () => void;
 };
 
+//  mobile menu store class
 export class MobStore implements MobStoreI {
   isOpen: boolean = false;
 

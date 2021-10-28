@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
+import Grid from '@mui/material/Grid';
 import Dialog, { DialogProps } from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -18,35 +19,40 @@ import { Message } from '../../../store/chatStore/chatStore';
 
 const TestModal = (): JSX.Element => {
   const [defaultSender, setDefaultSender] = useState('');
+  const [defaultSenderDisabled, setDefaultSenderDisabled] = useState(false);
+  const [customSender, setCustomSender] = useState('');
+  const [customSenderDisabled, setCustomSenderDisabled] = useState(false);
   const [message, setMessage] = useState('');
   const store = useContext(StoreContext);
   const isOpen = store.chatStore.getTestModalStatus();
   const names = Array.from(new Set(testMessages.map((message) => message.channelId)));
 
-  useEffect(() => {
-    console.log('defaultSender', defaultSender)
-  }, [defaultSender]);
-
   const clickHandler = (): void => {
     store.chatStore.toggleTestModal();
   };
 
-  const handleChange = (e: SelectChangeEvent) => {
-    setDefaultSender(e.target.value as string)
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    setDefaultSender(e.target.value as string);
+    setCustomSender('');
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomSender(e.target.value as string);
+    setDefaultSender('');
   };
 
   const handleMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value as string)
+    setMessage(e.target.value as string);
   };
 
   const sendHandler = (): void => {
-    if (!defaultSender) return;
+    if (!defaultSender && !customSender) return;
     if (!message) return;
 
     const newMessage: Message = {
       id: Date.now(),
-      roomId: defaultSender,
-      channelId:defaultSender,
+      roomId: defaultSender || customSender,
+      channelId:defaultSender || customSender,
       body: message,
       ts: new Date(),
       isOut: false,
@@ -56,6 +62,7 @@ const TestModal = (): JSX.Element => {
     store.chatStore.sendMessage(newMessage);
 
     setDefaultSender('');
+    setCustomSender('');
     setMessage('');
   };
 
@@ -66,24 +73,42 @@ const TestModal = (): JSX.Element => {
         onClose={clickHandler}
       >
         <DialogTitle>Select or create sender and send a message to a certain room!</DialogTitle>
+        
         <DialogContent>
-          <Box mt={2} sx={{ maxWidth: 200 }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Name</InputLabel>
-              <Select
-                labelId="sender-label"
-                id="sender-name"
-                value={defaultSender}
-                label="Name"
-                onChange={handleChange}
-              >
-                {names.map((item) => (
-                  <MenuItem key={item} value={item}>{item}</MenuItem>
-                ))}
-                <MenuItem value={''}>Clear</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+          <Grid container spacing={3}>
+            <Grid item lg={4} md={4} sm={4} xs={12}>
+              <Box mt={2} sx={{ maxWidth: 200 }}>
+                <FormControl fullWidth>
+                  <InputLabel id="default-name-select">Names</InputLabel>
+                  <Select
+                    labelId="sender-label"
+                    id="sender-name"
+                    value={defaultSender}
+                    label="Name"
+                    onChange={handleSelectChange}
+                  >
+                    {names.map((item) => (
+                      <MenuItem key={item} value={item}>{item}</MenuItem>
+                    ))}
+                    <MenuItem value={''}>clear</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Grid>
+
+            <Grid item lg={4} md={4} sm={4} xs={12}>
+              <Box mt={2} sx={{ maxWidth: 200 }}>
+                <TextField 
+                  id="outlined-basic" 
+                  label="Name" 
+                  variant="outlined"
+                  value={customSender}
+                  onChange={handleChange}
+                  disabled={defaultSenderDisabled}
+                />
+              </Box>
+            </Grid>
+          </Grid>
 
           <Box mt={5}>
             <FormControl fullWidth>
@@ -95,13 +120,22 @@ const TestModal = (): JSX.Element => {
                   fullWidth
                   value={message}
                   onChange={handleMessage}
+                  disabled={customSenderDisabled}
                 />
             </FormControl>
           </Box>
 
-          <Box mt={4}>
+          <Box mt={4} sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
             <Button variant="contained" onClick={sendHandler}>
               Send message
+            </Button>
+
+            <Button onClick={clickHandler}>
+              Close
             </Button>
           </Box>
         

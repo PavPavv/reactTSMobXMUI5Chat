@@ -1,17 +1,25 @@
 import { createTheme } from "@mui/material";
-import { breakpoints } from "@mui/system";
 
 import { Colors } from "./colors";
+
+const corporateColors = {
+  //  blue
+  mainCorporate: Colors.Blue,
+  mainCorporateLight: Colors.LightBlue,
+
+  //  green
+  secondCorporate: Colors.Green,
+}
 
 export const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      light: Colors.LightBlue,
-      main: Colors.Blue,
+      light: corporateColors.mainCorporateLight,
+      main: corporateColors.mainCorporate,
     },
     secondary: {
-      main: Colors.Green,
+      main: corporateColors.secondCorporate,
     },
     grey: {
       '500': Colors.LightGrey,

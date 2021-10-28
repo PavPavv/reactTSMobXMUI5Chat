@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
+import { testMessages } from "../mobStore/testData";
+
 export type MessageProperty = number | string | boolean | Date;
 
 export interface Message {
@@ -53,9 +55,14 @@ const getUnreadCount = (messages: Message[], channelName: string): number => {
     .length
 };
 
-//  store class
+const setUnreadCountToZero = (messages: Message[], channelName: string): void => {
+  messages.filter((message: Message) => message.channelId === channelName)
+          .forEach((filteredMsg: Message) => filteredMsg.isUnread = false);
+};
+
+//  chat store class
 export class ChatStore implements ChatStoreI {
-  messages: Message[] = [];
+  messages: Message[] = testMessages;
   selectedChat: string = '';
   isTestShown: boolean = false;
 
@@ -98,6 +105,10 @@ export class ChatStore implements ChatStoreI {
 
   getTestModalStatus(): boolean {
     return this.isTestShown;
+  }
+
+  readChat(roomName: string): void {
+    setUnreadCountToZero(this.messages, roomName);
   }
 
   //  ideally this method should get all the user's messages from the server

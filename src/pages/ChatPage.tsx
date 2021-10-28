@@ -1,23 +1,18 @@
+import { useHistory } from "react-router-dom";
 import { useEffect, useContext } from 'react';
 import { observer } from "mobx-react-lite";
 import { styled } from '@mui/system';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Drawer from '@mui/material/Drawer';
-// import MuiDrawer from '@mui/material/Drawer';
 
 //  logic
 import { StoreContext } from '../store/StoreContext';
-import { testMessages } from '../store/mobStore/testData';
-import { Message } from '../store/chatStore/chatStore';
 
 //  ui
 import ChatList from '../components/chat/ChatList/ChatList';
 import ChatRoom from '../components/chat/ChatRoom/ChatRoom';
 import NoSelectedMessages from '../components/chat/ChatRoom/NoSelectedMessages';
-
-import Modal from '../components/ui/Modal';
-import TestMessages from '../components/chat/Test/TestMessages';
 import TestModal from '../components/chat/Test/TestModal';
 
 const DesktopWrap = styled('div')(({ theme }) => ({
@@ -35,16 +30,16 @@ const MobDrawer = styled(Drawer)(({ theme }) => ({
 }));
 
 const ChatPage = (): JSX.Element => {
+  const history = useHistory();
   const store = useContext(StoreContext);
-  const selectedChar = store.chatStore.selectedChat;
+  const selectedChat = store.chatStore.selectedChat;
+  const isLoggedIn = localStorage.getItem('MY_CHAT_TOKEN');
 
   useEffect(() => {
-    testMessages.forEach((msg: Message) => {
-      store.chatStore.sendMessage(msg);
-    });
-
-    console.log('messages been loaded');
-  }, []);
+    if (!isLoggedIn) {
+      history.push('/login');
+    }
+  }, [history, isLoggedIn]);
 
   const handleCloseMobMenu = (): void => {
     store.mobStore.closeMobMenu();
@@ -66,7 +61,7 @@ const ChatPage = (): JSX.Element => {
           </DesktopWrap>
         </Grid>
         <Grid container item md ={12} lg={9} justifyContent="center" >
-          {selectedChar ? <ChatRoom /> : <NoSelectedMessages />}
+          {selectedChat ? <ChatRoom /> : <NoSelectedMessages />}
         </Grid>
       </Grid>
 

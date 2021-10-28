@@ -60,6 +60,7 @@ const ChatPreview = ({name, message, time, latestSpeaker, msgsCount, isRoomSelec
 
   const clickHandler = (): void => {
     store.chatStore.setSelectedChat(name);
+    store.chatStore.readChat(name);
   };
 
   return (
