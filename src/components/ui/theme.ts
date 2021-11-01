@@ -21,6 +21,9 @@ export const theme = createTheme({
     secondary: {
       main: corporateColors.secondCorporate,
     },
+    error: {
+      main: Colors.Red,
+    },
     grey: {
       '500': Colors.LightGrey,
       '700': Colors.Grey,

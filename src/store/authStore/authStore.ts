@@ -52,11 +52,12 @@ export class AuthStore implements Auth {
       this.isLoading = false;
     } catch (err) {
       this.isLoading = false;
+      this.isSignUp = false;
       console.log('auth request error', err);
     }
   }
 
-  async signIn(email: string, password: string): Promise<any> {
+  async logIn(email: string, password: string): Promise<any> {
     this.isLoading = true;
 
     try {
@@ -85,6 +86,7 @@ export class AuthStore implements Auth {
       this.isLoading = false;
     } catch (err) {
       this.isLoading = false;
+      this.isLoggedIn = false;
       console.log('auth request error', err);
     }
   }

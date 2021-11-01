@@ -7,10 +7,10 @@ import Container from '@mui/material/Container';
 import { StoreContext } from '../store/StoreContext';
 
 //  ui
-import Login from '../components/login/Login';
-import SignUp from '../components/login/SignUp';
-import ForgottenPassword from '../components/login/ForgottenPassword';
-import LoginSuccess from '../components/login/LoginSuccess';
+import Login from '../components/login/Login/Login';
+import SignUp from '../components/login/SignUp/SignUp';
+import ForgottenPassword from '../components/login/ForgottenPassword/ForgottenPassword';
+import SignUpSuccess from '../components/login/SignUp/SugnUpSuccess';
 
 type LoginPageState = 'login' | 'signUp' | 'forgottenPassword';
 
@@ -57,7 +57,7 @@ const LoginPage = (): JSX.Element => {
       }
     }
 
-    return <LoginSuccess goToLogin={goToLoginHandler} />;
+    return <SignUpSuccess goToLogin={goToLoginHandler} />;
   }; 
 
   return (

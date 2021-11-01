@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { observer } from "mobx-react-lite";
+import { useFormik } from 'formik';
 import { styled } from '@mui/system';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -8,9 +9,14 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
+import CircularProgress from '@mui/material/CircularProgress';
 
 //  logic
-import { StoreContext } from '../../store/StoreContext';
+import { StoreContext } from '../../../store/StoreContext';
+import { validationRules, LoginValues } from './validation-rules';
+
+//  ui
+import FormErrorMessage from '../../ui/FormErrorMessage/FormErrorMessage';
 
 const FormPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -23,29 +29,26 @@ type LoginProps = {
 
 const Login = ({ goToSignUp, goToForgottenPassword }: LoginProps): JSX.Element => {
   const store = useContext(StoreContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const isLoading = store.authStore.isLoading;
+  const [loginSuccess, setLoginSuccess] = useState(true);
 
-  const submitHandler = (): void => {
-    console.log('login submit');
-    const enteredEmail = email;
-    const enteredPassword = password;
-
-    store.authStore.signIn(enteredEmail, enteredPassword);
-  };
-
-  const emailChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: validationRules,
+    onSubmit: (values: LoginValues) => {
+      const { email, password } = values;
+      store.authStore.logIn(email, password);
+      setLoginSuccess(store.authStore.isLoggedIn);
+    },
+  });
 
   return (
     <FormPaper elevation={3} >
       <Typography variant="h4" align="center">Log in</Typography>
-      <Box component="form">
+      <Box component="form" onSubmit={formik.handleSubmit}>
         <TextField 
           margin="normal"
           required
@@ -55,8 +58,11 @@ const Login = ({ goToSignUp, goToForgottenPassword }: LoginProps): JSX.Element =
           name="email"
           autoComplete="email"
           autoFocus
-          value={email}
-          onChange={emailChangeHandler}
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.email && formik.errors.email ? true : false}
+          helperText={formik.touched.email && formik.errors.email ? 'Invalid email' : ''}
         />
 
         <TextField
@@ -68,13 +74,19 @@ const Login = ({ goToSignUp, goToForgottenPassword }: LoginProps): JSX.Element =
           type="password"
           id="password"
           autoComplete="current-password"
-          value={password}
-          onChange={passwordChangeHandler}
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.password && formik.errors.password ? true : false}
+          helperText={formik.touched.password && formik.errors.password ? 'Invalid password' : ''}
         />
+        {loginSuccess ? null : <FormErrorMessage>Incorrect email or password</FormErrorMessage>}
+        
         <Box mt={2} />
-        <Button variant="contained" size="large" fullWidth onClick={submitHandler}>
-          Log In
+        <Button variant="contained" size="large" fullWidth type="submit">
+          {isLoading ? <CircularProgress color="inherit" size={26} /> : 'Log In'}
         </Button>
+
         <Grid container sx={{ marginTop: '30px', }}>
           <Grid item xs>
             <Link href="#" variant="body2" onClick={goToForgottenPassword}>
@@ -92,4 +104,4 @@ const Login = ({ goToSignUp, goToForgottenPassword }: LoginProps): JSX.Element =
   )
 };
 
-export default Login;
+export default observer(Login);

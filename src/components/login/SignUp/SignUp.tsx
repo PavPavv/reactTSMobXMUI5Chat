@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react';
+import { useFormik } from 'formik';
 import { observer } from "mobx-react-lite";
 import { styled } from '@mui/system';
 import Grid from '@mui/material/Grid';
@@ -11,7 +12,11 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 
 //  logic
-import { StoreContext } from '../../store/StoreContext';
+import { StoreContext } from '../../../store/StoreContext';
+import { validationRules, SignUpValues } from './validation-rules';
+
+//  ui
+import FormErrorMessage from '../../ui/FormErrorMessage/FormErrorMessage';
 
 const FormPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -25,34 +30,26 @@ type LoginProps = {
 const SignUp = ({ goToLogin, goToForgottenPassword }: LoginProps): JSX.Element => {
   const store = useContext(StoreContext);
   const isLoading = store.authStore.isLoading;
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [signUpSuccess, setSignUpSuccess] = useState(true);
 
-  const submitHandler = (): void => {
-    const enteredName = name;
-    const enteredEmail = email;
-    const enteredPassword = password;
-
-    store.authStore.signUp(enteredName, enteredEmail, enteredPassword);
-  };
-
-  const nameChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
-
-  const emailChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
+    validationSchema: validationRules,
+    onSubmit: (values: SignUpValues) => {
+      const { name, email, password } = values;
+      store.authStore.signUp(name, email, password);
+      setSignUpSuccess(store.authStore.isSignUp);
+    },
+  })
 
   return (
     <FormPaper elevation={3} >
       <Typography variant="h4" align="center">Sign Up</Typography>
-      <Box component="form">
+      <Box component="form" onSubmit={formik.handleSubmit}>
         <TextField 
           margin="normal"
           required
@@ -62,7 +59,11 @@ const SignUp = ({ goToLogin, goToForgottenPassword }: LoginProps): JSX.Element =
           name="name"
           autoComplete="off"
           autoFocus
-          onChange={nameChangeHandler}
+          value={formik.values.name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.name && formik.errors.name ? true : false}
+          helperText={formik.touched.name && formik.errors.name ? 'Invalid name' : ''}
         />
 
         <TextField 
@@ -73,7 +74,11 @@ const SignUp = ({ goToLogin, goToForgottenPassword }: LoginProps): JSX.Element =
           label="Email Address"
           name="email"
           autoComplete="email"
-          onChange={emailChangeHandler}
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.email && formik.errors.email ? true : false}
+          helperText={formik.touched.email && formik.errors.email ? 'Invalid email' : ''}
         />
 
         <TextField
@@ -85,13 +90,20 @@ const SignUp = ({ goToLogin, goToForgottenPassword }: LoginProps): JSX.Element =
           type="password"
           id="password"
           autoComplete="off"
-          onChange={passwordChangeHandler}
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.password && formik.errors.password ? true : false}
+          helperText={formik.touched.password && formik.errors.password ? 'Invalid password' : ''}
         />
+        
+        {signUpSuccess ? null : <FormErrorMessage>Incorrect fields</FormErrorMessage>}
 
         <Box mt={2} />
-        <Button variant="contained" size="large" fullWidth onClick={submitHandler}>
+        <Button variant="contained" size="large" fullWidth type="submit">
           {isLoading ? <CircularProgress color="inherit" size={26} /> : 'Sign up'}
         </Button>
+        
         <Grid container sx={{ marginTop: '30px', }}>
           <Grid item xs>
             <Link href="#" variant="body2" onClick={goToForgottenPassword}>
