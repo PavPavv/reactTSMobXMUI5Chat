@@ -1,6 +1,6 @@
 import { MobStore } from "./mobStore/mobStore";
-import { ChatStore } from './chatStore/chatStore';
-import { AuthStore } from './authStore/authStore';
+import { ChatStore } from "./chatStore/chatStore";
+import { AuthStore } from "./authStore/authStore";
 
 class RootStore {
   mobStore: MobStore;

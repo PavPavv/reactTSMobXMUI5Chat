@@ -12,7 +12,7 @@ export interface Message {
   ts: Date;
   isOut: boolean;
   isUnread: boolean;
-};
+}
 
 export interface ChatStoreI {
   messages: Message[];
@@ -26,44 +26,66 @@ export interface ChatStoreI {
 }
 
 //  store helper functions
-type MsgSortType = 'ts' | 'body' | 'isOut' | 'roomId';
+type MsgSortType = "ts" | "body" | "isOut" | "roomId";
 
-const getLastMsgProperty = (messages: Message[], room: string, property: MsgSortType): MessageProperty => {
-  const test =  messages.filter((message) => message.channelId === room).sort((a, b) => b.ts.getTime() - a.ts.getTime())[0];
+const getLastMsgProperty = (
+  messages: Message[],
+  room: string,
+  property: MsgSortType,
+): MessageProperty => {
+  const test = messages
+    .filter((message) => message.channelId === room)
+    .sort((a, b) => b.ts.getTime() - a.ts.getTime())[0];
   return test[property];
 };
 
-const getLatestRoomSpeaker = (messages: Message[], channelName: string): string => {
-  const lastIncomingSpeaker =  getLastMsgProperty(messages, channelName, 'roomId');
-  const isOutcoming = getLastMsgProperty(messages, channelName, 'isOut');
-                      
-  return isOutcoming ? 'you' : lastIncomingSpeaker as string;
+const getLatestRoomSpeaker = (
+  messages: Message[],
+  channelName: string,
+): string => {
+  const lastIncomingSpeaker = getLastMsgProperty(
+    messages,
+    channelName,
+    "roomId",
+  );
+  const isOutcoming = getLastMsgProperty(messages, channelName, "isOut");
+
+  return isOutcoming ? "you" : (lastIncomingSpeaker as string);
 };
 
-const getLatestMessageFromChannel = (messages: Message[], channelName: string): string => {
-  return getLastMsgProperty(messages, channelName, 'body') as string;
+const getLatestMessageFromChannel = (
+  messages: Message[],
+  channelName: string,
+): string => {
+  return getLastMsgProperty(messages, channelName, "body") as string;
 };
 
-const getLatestMessageTime = (messages: Message[], channelName: string): Date => {
-  return getLastMsgProperty(messages, channelName, 'ts') as Date;;
+const getLatestMessageTime = (
+  messages: Message[],
+  channelName: string,
+): Date => {
+  return getLastMsgProperty(messages, channelName, "ts") as Date;
 };
 
 const getUnreadCount = (messages: Message[], channelName: string): number => {
   return messages
     .filter((message) => message.channelId === channelName)
-    .filter((message) => message.isUnread === true)
-    .length
+    .filter((message) => message.isUnread === true).length;
 };
 
-const setUnreadCountToZero = (messages: Message[], channelName: string): void => {
-  messages.filter((message: Message) => message.channelId === channelName)
-          .forEach((filteredMsg: Message) => filteredMsg.isUnread = false);
+const setUnreadCountToZero = (
+  messages: Message[],
+  channelName: string,
+): void => {
+  messages
+    .filter((message: Message) => message.channelId === channelName)
+    .forEach((filteredMsg: Message) => (filteredMsg.isUnread = false));
 };
 
 //  chat store class
 export class ChatStore implements ChatStoreI {
   messages: Message[] = testMessages;
-  selectedChat: string = '';
+  selectedChat: string = "";
   isTestShown: boolean = false;
 
   constructor() {
@@ -92,11 +114,13 @@ export class ChatStore implements ChatStoreI {
   }
 
   unreadCount(roomName: string): number {
-    return getUnreadCount(this.messages, roomName)
+    return getUnreadCount(this.messages, roomName);
   }
 
   getRoomMessages(): Message[] {
-    return this.messages.filter((meassage: Message) => meassage.roomId === this.selectedChat);
+    return this.messages.filter(
+      (meassage: Message) => meassage.roomId === this.selectedChat,
+    );
   }
 
   toggleTestModal(): void {
@@ -115,5 +139,4 @@ export class ChatStore implements ChatStoreI {
   // getMessages = (): Message[] => {
   //   return this.messages;
   // }
-  
 }
